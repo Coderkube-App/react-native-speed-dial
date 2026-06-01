@@ -1,310 +1,262 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" width="800" height="480">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 500" width="800" height="500">
   <defs>
     <style type="text/css">
       /*<![CDATA[*/
       @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
       .bg { fill: #0b0f19; }
-      .phone-frame { fill: #1a1a2e; stroke: #2a2a4a; stroke-width: 2; }
+      .phone-body { fill: #111827; stroke: #374151; stroke-width: 2; }
       .phone-screen { fill: #f8fafc; }
-      .phone-notch { fill: #1a1a2e; }
-      .status-bar-text { font-family: 'Inter', sans-serif; font-size: 10px; fill: #334155; font-weight: 600; }
+      .notch-bg { fill: #111827; }
 
-      /* Typography */
-      .title { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 700; fill: #f8fafc; }
-      .subtitle { font-family: 'Inter', sans-serif; font-size: 13px; fill: #94a3b8; }
-      .badge-text { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-      .label-text { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; fill: #1e293b; }
-      .code-font { font-family: 'Fira Code', monospace; font-size: 12px; }
-      .feature-title { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; fill: #e2e8f0; }
-      .feature-desc { font-family: 'Inter', sans-serif; font-size: 11px; fill: #64748b; }
+      .title-font { font-family: 'Inter', sans-serif; font-size: 18px; font-weight: 700; fill: #f8fafc; }
+      .desc-font { font-family: 'Inter', sans-serif; font-size: 13px; fill: #94a3b8; }
+      .small-font { font-family: 'Inter', sans-serif; font-size: 10px; fill: #475569; font-weight: 600; }
+      .label-font { font-family: 'Inter', sans-serif; font-size: 10px; fill: #1e293b; font-weight: 600; }
+      .feature-head { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; fill: #e2e8f0; }
+      .feature-body { font-family: 'Inter', sans-serif; font-size: 11px; fill: #64748b; }
+      .badge-font { font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 700; text-transform: uppercase; }
+      .code-font { font-family: 'Fira Code', 'Consolas', monospace; font-size: 11px; }
 
-      /* App mock content */
-      .app-header { fill: #6366f1; }
-      .app-header-text { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; fill: #ffffff; }
-      .app-card { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1; }
-      .app-card-title { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; fill: #1e293b; }
-      .app-card-desc { font-family: 'Inter', sans-serif; font-size: 9px; fill: #94a3b8; }
-      .app-card-line { fill: #e2e8f0; }
+      .header-bar { fill: #6366f1; }
+      .header-text { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700; fill: #ffffff; }
+      .card-rect { fill: #ffffff; stroke: #e2e8f0; stroke-width: 1; }
+      .skel-line { fill: #e2e8f0; }
+      .backdrop-rect { fill: #0f172a; }
 
-      /* FAB & Action buttons */
-      .fab-shadow { fill: rgba(99, 102, 241, 0.3); }
+      /* ══════ ANIMATION TIMING ══════
+         0-3s   : Closed (app visible)
+         3-3.6s : Open (backdrop + actions fan out)
+         3.6-7s : Hold open
+         7-7.6s : Close
+         7.6-10s: Hold closed, loop
+      ══════════════════════════════ */
 
-      /* Backdrop overlay */
-      .backdrop { fill: #0f172a; }
-
-      /* Glow effects */
-      .glow-indigo { filter: drop-shadow(0 4px 12px rgba(99, 102, 241, 0.5)); }
-      .glow-rose { filter: drop-shadow(0 2px 8px rgba(225, 29, 72, 0.4)); }
-      .glow-blue { filter: drop-shadow(0 2px 8px rgba(37, 99, 235, 0.4)); }
-      .glow-emerald { filter: drop-shadow(0 2px 8px rgba(5, 150, 105, 0.4)); }
-
-      /* ═══════════════ ANIMATIONS ═══════════════ */
-
-      /* Phase 1 (0-3s): Closed state, show app */
-      /* Phase 2 (3-3.5s): FAB rotates, backdrop fades in, actions fan out */
-      /* Phase 3 (3.5-7s): Open state, hold */
-      /* Phase 4 (7-7.5s): Close back */
-      /* Phase 5 (7.5-10s): Closed, hold, loop */
-
-      @keyframes fabRotate {
-        0%, 30% { transform: rotate(0deg); }
-        33%, 70% { transform: rotate(45deg); }
-        73%, 100% { transform: rotate(0deg); }
+      /* Backdrop fade */
+      @keyframes bdFade {
+        0%, 30%  { opacity: 0; }
+        36%, 70% { opacity: 0.5; }
+        76%, 100%{ opacity: 0; }
       }
-      .fab-icon { animation: fabRotate 10s ease-in-out infinite; transform-origin: 191px 383px; }
+      .bd-anim { animation: bdFade 10s ease infinite; }
 
-      @keyframes backdropFade {
-        0%, 28% { opacity: 0; }
-        33%, 70% { opacity: 0.4; }
-        75%, 100% { opacity: 0; }
+      /* FAB icon rotate (+ → ×) */
+      @keyframes iconSpin {
+        0%, 30%  { transform: rotate(0deg); }
+        36%, 70% { transform: rotate(45deg); }
+        76%, 100%{ transform: rotate(0deg); }
       }
-      .backdrop-anim { animation: backdropFade 10s ease-in-out infinite; }
 
-      /* Radial fan-out: 3 actions at -90°, -135°, -180° from FAB center */
-      /* Action 1: straight up (-90°) */
-      @keyframes action1Fan {
-        0%, 28% { transform: translate(0, 0) scale(0); opacity: 0; }
-        35% { transform: translate(0, -110px) scale(1); opacity: 1; }
-        68% { transform: translate(0, -110px) scale(1); opacity: 1; }
-        75% { transform: translate(0, 0) scale(0); opacity: 0; }
-        100% { transform: translate(0, 0) scale(0); opacity: 0; }
+      /* Action buttons: scale from 0 at own center */
+      @keyframes pop1 {
+        0%, 30%  { transform: scale(0); opacity: 0; }
+        36%      { transform: scale(1.15); opacity: 1; }
+        39%, 66% { transform: scale(1); opacity: 1; }
+        72%      { transform: scale(0); opacity: 0; }
+        100%     { transform: scale(0); opacity: 0; }
       }
-      .action-1 { animation: action1Fan 10s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; transform-origin: 191px 383px; }
-
-      /* Action 2: diagonal (-135°) → x=-78, y=-78 */
-      @keyframes action2Fan {
-        0%, 30% { transform: translate(0, 0) scale(0); opacity: 0; }
-        37% { transform: translate(-78px, -78px) scale(1); opacity: 1; }
-        66% { transform: translate(-78px, -78px) scale(1); opacity: 1; }
-        73% { transform: translate(0, 0) scale(0); opacity: 0; }
-        100% { transform: translate(0, 0) scale(0); opacity: 0; }
+      @keyframes pop2 {
+        0%, 32%  { transform: scale(0); opacity: 0; }
+        38%      { transform: scale(1.15); opacity: 1; }
+        41%, 64% { transform: scale(1); opacity: 1; }
+        70%      { transform: scale(0); opacity: 0; }
+        100%     { transform: scale(0); opacity: 0; }
       }
-      .action-2 { animation: action2Fan 10s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; transform-origin: 191px 383px; }
-
-      /* Action 3: straight left (-180°) → x=-110, y=0 */
-      @keyframes action3Fan {
-        0%, 32% { transform: translate(0, 0) scale(0); opacity: 0; }
-        39% { transform: translate(-110px, 0px) scale(1); opacity: 1; }
-        64% { transform: translate(-110px, 0px) scale(1); opacity: 1; }
-        71% { transform: translate(0, 0) scale(0); opacity: 0; }
-        100% { transform: translate(0, 0) scale(0); opacity: 0; }
+      @keyframes pop3 {
+        0%, 34%  { transform: scale(0); opacity: 0; }
+        40%      { transform: scale(1.15); opacity: 1; }
+        43%, 62% { transform: scale(1); opacity: 1; }
+        68%      { transform: scale(0); opacity: 0; }
+        100%     { transform: scale(0); opacity: 0; }
       }
-      .action-3 { animation: action3Fan 10s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; transform-origin: 191px 383px; }
 
-      /* Labels fade in slightly after their button */
-      @keyframes label1Show {
-        0%, 34% { opacity: 0; }
-        38%, 66% { opacity: 1; }
-        70%, 100% { opacity: 0; }
+      /* Labels fade */
+      @keyframes lbl1 { 0%, 37% { opacity: 0; } 41%, 64% { opacity: 1; } 68%, 100% { opacity: 0; } }
+      @keyframes lbl2 { 0%, 39% { opacity: 0; } 43%, 62% { opacity: 1; } 66%, 100% { opacity: 0; } }
+      @keyframes lbl3 { 0%, 41% { opacity: 0; } 45%, 60% { opacity: 1; } 64%, 100% { opacity: 0; } }
+
+      /* Tap ring on FAB */
+      @keyframes ring {
+        0%, 29% { r: 28; opacity: 0; stroke-width: 2; }
+        31%     { r: 28; opacity: 0.5; }
+        36%     { r: 40; opacity: 0; }
+        69%     { r: 28; opacity: 0; }
+        71%     { r: 28; opacity: 0.5; }
+        76%     { r: 40; opacity: 0; }
+        100%    { r: 28; opacity: 0; }
       }
-      .label-1 { animation: label1Show 10s ease infinite; }
 
-      @keyframes label2Show {
-        0%, 36% { opacity: 0; }
-        40%, 64% { opacity: 1; }
-        68%, 100% { opacity: 0; }
-      }
-      .label-2 { animation: label2Show 10s ease infinite; }
-
-      @keyframes label3Show {
-        0%, 38% { opacity: 0; }
-        42%, 62% { opacity: 1; }
-        66%, 100% { opacity: 0; }
-      }
-      .label-3 { animation: label3Show 10s ease infinite; }
-
-      /* Tap ring pulse on FAB */
-      @keyframes tapRing {
-        0%, 29% { r: 28; opacity: 0; }
-        31% { r: 28; opacity: 0.4; }
-        34% { r: 38; opacity: 0; }
-        69% { r: 28; opacity: 0; }
-        71% { r: 28; opacity: 0.4; }
-        74% { r: 38; opacity: 0; }
-        100% { r: 28; opacity: 0; }
-      }
-      .tap-ring { animation: tapRing 10s ease infinite; }
-
-      /* Feature card highlight pulse */
-      @keyframes featurePulse {
+      /* Feature pulse */
+      @keyframes fpulse {
         0%, 100% { opacity: 0.6; }
         50% { opacity: 1; }
       }
-      .feature-pulse { animation: featurePulse 3s ease-in-out infinite; }
+      .fp { animation: fpulse 3s ease-in-out infinite; }
       /*]]>*/
     </style>
-
-    <!-- Shadow filter -->
-    <filter id="card-shadow" x="-10%" y="-10%" width="120%" height="130%">
-      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.15" />
+    <filter id="shadow1" x="-10%" y="-10%" width="120%" height="130%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000" flood-opacity="0.12" />
     </filter>
-    <filter id="fab-shadow" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#6366f1" flood-opacity="0.4" />
+    <filter id="fabglow" x="-40%" y="-40%" width="180%" height="180%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#6366f1" flood-opacity="0.45" />
     </filter>
   </defs>
 
   <!-- Background -->
-  <rect class="bg" width="800" height="480" rx="16" ry="16" />
+  <rect class="bg" width="800" height="500" rx="16" ry="16" />
 
-  <!-- HEADER -->
-  <g transform="translate(30, 38)">
-    <text class="title" x="0" y="0">🚀 react-native-speed-dial</text>
-    <text class="subtitle" x="0" y="22">Radial &amp; linear FAB with spring-animated GPU-accelerated layouts</text>
+  <!-- Title -->
+  <g transform="translate(30, 40)">
+    <text class="title-font">🚀 react-native-speed-dial</text>
+    <text class="desc-font" y="24">Radial &amp; linear FAB with spring-animated GPU-accelerated layouts</text>
   </g>
 
-  <!-- ═══════════════ PHONE MOCKUP ═══════════════ -->
-  <g transform="translate(50, 75)">
-    <!-- Phone Frame -->
-    <rect class="phone-frame" width="240" height="380" rx="24" ry="24" />
-
+  <!-- ════════════ PHONE MOCKUP ════════════ -->
+  <g transform="translate(55, 80)">
+    <!-- Phone body -->
+    <rect class="phone-body" width="250" height="400" rx="28" ry="28" />
     <!-- Screen -->
-    <rect class="phone-screen" x="8" y="8" width="224" height="364" rx="18" ry="18" />
-
+    <rect class="phone-screen" x="10" y="10" width="230" height="380" rx="20" ry="20" />
     <!-- Notch -->
-    <rect class="phone-notch" x="75" y="8" width="90" height="22" rx="0" ry="0" />
-    <rect class="phone-notch" x="75" y="8" width="90" height="16" rx="0" ry="8" />
+    <rect class="notch-bg" x="80" y="10" width="90" height="24" rx="0" ry="0" />
+    <rect class="notch-bg" x="80" y="10" width="90" height="18" rx="0" ry="10" />
+    <!-- Status bar -->
+    <text class="small-font" x="24" y="28">9:41</text>
+    <text class="small-font" x="202" y="28">100%</text>
 
-    <!-- Status Bar -->
-    <text class="status-bar-text" x="22" y="24">9:41</text>
-    <text class="status-bar-text" x="190" y="24">100%</text>
+    <!-- App header -->
+    <rect class="header-bar" x="10" y="34" width="230" height="42" />
+    <text class="header-text" x="24" y="60">My App</text>
 
-    <!-- App Header Bar -->
-    <rect class="app-header" x="8" y="30" width="224" height="40" />
-    <text class="app-header-text" x="20" y="55">My App</text>
-
-    <!-- Mock Content Cards -->
-    <g transform="translate(18, 82)">
-      <rect class="app-card" width="204" height="55" rx="8" ry="8" filter="url(#card-shadow)" />
-      <rect class="app-card-line" x="12" y="12" width="90" height="8" rx="4" ry="4" />
-      <rect class="app-card-line" x="12" y="26" width="140" height="6" rx="3" ry="3" />
-      <rect class="app-card-line" x="12" y="38" width="110" height="6" rx="3" ry="3" />
+    <!-- Content cards -->
+    <g transform="translate(22, 88)">
+      <rect class="card-rect" width="206" height="50" rx="8" ry="8" filter="url(#shadow1)" />
+      <rect class="skel-line" x="12" y="12" width="90" height="8" rx="4" ry="4" />
+      <rect class="skel-line" x="12" y="26" width="140" height="6" rx="3" ry="3" />
+      <rect class="skel-line" x="12" y="36" width="100" height="6" rx="3" ry="3" />
     </g>
-    <g transform="translate(18, 148)">
-      <rect class="app-card" width="204" height="55" rx="8" ry="8" filter="url(#card-shadow)" />
-      <rect class="app-card-line" x="12" y="12" width="100" height="8" rx="4" ry="4" />
-      <rect class="app-card-line" x="12" y="26" width="160" height="6" rx="3" ry="3" />
-      <rect class="app-card-line" x="12" y="38" width="80" height="6" rx="3" ry="3" />
+    <g transform="translate(22, 148)">
+      <rect class="card-rect" width="206" height="50" rx="8" ry="8" filter="url(#shadow1)" />
+      <rect class="skel-line" x="12" y="12" width="110" height="8" rx="4" ry="4" />
+      <rect class="skel-line" x="12" y="26" width="160" height="6" rx="3" ry="3" />
+      <rect class="skel-line" x="12" y="36" width="80" height="6" rx="3" ry="3" />
     </g>
-    <g transform="translate(18, 214)">
-      <rect class="app-card" width="204" height="55" rx="8" ry="8" filter="url(#card-shadow)" />
-      <rect class="app-card-line" x="12" y="12" width="75" height="8" rx="4" ry="4" />
-      <rect class="app-card-line" x="12" y="26" width="150" height="6" rx="3" ry="3" />
-      <rect class="app-card-line" x="12" y="38" width="120" height="6" rx="3" ry="3" />
+    <g transform="translate(22, 208)">
+      <rect class="card-rect" width="206" height="50" rx="8" ry="8" filter="url(#shadow1)" />
+      <rect class="skel-line" x="12" y="12" width="70" height="8" rx="4" ry="4" />
+      <rect class="skel-line" x="12" y="26" width="150" height="6" rx="3" ry="3" />
+      <rect class="skel-line" x="12" y="36" width="120" height="6" rx="3" ry="3" />
     </g>
-
-    <!-- ═══ BACKDROP OVERLAY ═══ -->
-    <rect class="backdrop backdrop-anim" x="8" y="30" width="224" height="342" rx="0" ry="18" />
-
-    <!-- ═══ ACTION BUTTONS (fan from FAB center at 191,383 relative to phone) ═══ -->
-
-    <!-- Action 1: Camera (straight up, -90°) → target: 191, 273 -->
-    <g class="action-1">
-      <!-- Label -->
-      <g class="label-1">
-        <rect x="120" y="265" width="55" height="22" rx="6" ry="6" fill="#ffffff" filter="url(#card-shadow)" />
-        <text class="label-text" x="128" y="280">Camera</text>
-      </g>
-      <!-- Button -->
-      <circle class="glow-rose" cx="191" cy="273" r="22" fill="#E11D48" />
-      <text x="183" y="278" font-family="Inter, sans-serif" font-size="16px" fill="#fff">📷</text>
+    <g transform="translate(22, 268)">
+      <rect class="card-rect" width="206" height="50" rx="8" ry="8" filter="url(#shadow1)" />
+      <rect class="skel-line" x="12" y="12" width="100" height="8" rx="4" ry="4" />
+      <rect class="skel-line" x="12" y="26" width="130" height="6" rx="3" ry="3" />
+      <rect class="skel-line" x="12" y="36" width="90" height="6" rx="3" ry="3" />
     </g>
 
-    <!-- Action 2: Gallery (diagonal -135°) → target: 113, 305 -->
-    <g class="action-2">
-      <!-- Label -->
-      <g class="label-2">
-        <rect x="48" y="297" width="52" height="22" rx="6" ry="6" fill="#ffffff" filter="url(#card-shadow)" />
-        <text class="label-text" x="55" y="312">Gallery</text>
-      </g>
-      <!-- Button -->
-      <circle class="glow-blue" cx="113" cy="305" r="22" fill="#2563EB" />
-      <text x="105" y="310" font-family="Inter, sans-serif" font-size="16px" fill="#fff">🖼️</text>
+    <!-- ══ BACKDROP ══ -->
+    <rect class="backdrop-rect bd-anim" x="10" y="34" width="230" height="356" rx="0" ry="20" />
+
+    <!-- ══ ACTION 1: Camera — straight up from FAB ══ -->
+    <!-- FAB is at (200, 355). Action 1 target: (200, 250) -->
+    <g style="animation: pop1 10s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; transform-origin: 200px 250px;">
+      <circle cx="200" cy="250" r="20" fill="#E11D48" />
+      <text x="192" y="255" font-family="Inter, sans-serif" font-size="14px" fill="#fff">📷</text>
+    </g>
+    <g style="animation: lbl1 10s ease infinite;">
+      <rect x="132" y="241" width="56" height="20" rx="5" ry="5" fill="#fff" filter="url(#shadow1)" />
+      <text class="label-font" x="138" y="255">Camera</text>
     </g>
 
-    <!-- Action 3: Document (straight left, -180°) → target: 81, 383 -->
-    <g class="action-3">
-      <!-- Label -->
-      <g class="label-3">
-        <rect x="22" y="368" width="42" height="22" rx="6" ry="6" fill="#ffffff" filter="url(#card-shadow)" />
-        <text class="label-text" x="26" y="383">Doc</text>
-      </g>
-      <!-- Button -->
-      <circle class="glow-emerald" cx="81" cy="383" r="22" fill="#059669" />
-      <text x="73" y="388" font-family="Inter, sans-serif" font-size="16px" fill="#fff">📄</text>
+    <!-- ══ ACTION 2: Gallery — diagonal upper-left from FAB ══ -->
+    <!-- Target: (200-74, 355-74) = (126, 281) -->
+    <g style="animation: pop2 10s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; transform-origin: 126px 281px;">
+      <circle cx="126" cy="281" r="20" fill="#2563EB" />
+      <text x="118" y="286" font-family="Inter, sans-serif" font-size="14px" fill="#fff">🖼️</text>
+    </g>
+    <g style="animation: lbl2 10s ease infinite;">
+      <rect x="58" y="272" width="56" height="20" rx="5" ry="5" fill="#fff" filter="url(#shadow1)" />
+      <text class="label-font" x="64" y="286">Gallery</text>
     </g>
 
-    <!-- ═══ MAIN FAB BUTTON ═══ -->
+    <!-- ══ ACTION 3: Document — straight left from FAB ══ -->
+    <!-- Target: (200-105, 355) = (95, 355) -->
+    <g style="animation: pop3 10s cubic-bezier(0.34, 1.56, 0.64, 1) infinite; transform-origin: 95px 355px;">
+      <circle cx="95" cy="355" r="20" fill="#059669" />
+      <text x="87" y="360" font-family="Inter, sans-serif" font-size="14px" fill="#fff">📄</text>
+    </g>
+    <g style="animation: lbl3 10s ease infinite;">
+      <rect x="34" y="346" width="50" height="20" rx="5" ry="5" fill="#fff" filter="url(#shadow1)" />
+      <text class="label-font" x="42" y="360">Doc</text>
+    </g>
+
+    <!-- ══ MAIN FAB ══ -->
     <!-- Tap ring -->
-    <circle class="tap-ring" cx="191" cy="350" r="28" fill="none" stroke="#6366f1" stroke-width="2" />
-    <!-- Button -->
-    <circle class="glow-indigo" cx="191" cy="350" r="28" fill="#6366f1" filter="url(#fab-shadow)" />
-    <!-- Plus / Cross icon -->
-    <g class="fab-icon">
-      <line x1="181" y1="350" x2="201" y2="350" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
-      <line x1="191" y1="340" x2="191" y2="360" stroke="#ffffff" stroke-width="3" stroke-linecap="round" />
+    <circle cx="200" cy="355" r="28" fill="none" stroke="#6366f1" stroke-width="2" style="animation: ring 10s ease infinite;" />
+    <!-- FAB circle -->
+    <circle cx="200" cy="355" r="28" fill="#6366f1" filter="url(#fabglow)" />
+    <!-- Plus/Cross icon -->
+    <g style="animation: iconSpin 10s ease-in-out infinite; transform-origin: 200px 355px;">
+      <line x1="190" y1="355" x2="210" y2="355" stroke="#fff" stroke-width="3" stroke-linecap="round" />
+      <line x1="200" y1="345" x2="200" y2="365" stroke="#fff" stroke-width="3" stroke-linecap="round" />
     </g>
   </g>
 
-  <!-- ═══════════════ RIGHT SIDE: FEATURE HIGHLIGHTS ═══════════════ -->
-  <g transform="translate(340, 85)">
-
-    <!-- Radial badge -->
-    <rect x="0" y="0" width="96" height="24" rx="6" ry="6" fill="#312e81" stroke="#6366f1" stroke-width="1" />
-    <text class="badge-text" x="8" y="16" fill="#a5b4fc">📐 RADIAL</text>
-
-    <rect x="106" y="0" width="88" height="24" rx="6" ry="6" fill="#1e3a2f" stroke="#059669" stroke-width="1" />
-    <text class="badge-text" x="114" y="16" fill="#6ee7b7">📏 LINEAR</text>
+  <!-- ════════════ RIGHT PANEL: FEATURES ════════════ -->
+  <g transform="translate(355, 90)">
+    <!-- Badges -->
+    <rect x="0" y="0" width="90" height="24" rx="6" ry="6" fill="#312e81" stroke="#6366f1" stroke-width="1" />
+    <text class="badge-font" x="8" y="16" fill="#a5b4fc">📐 RADIAL</text>
+    <rect x="100" y="0" width="84" height="24" rx="6" ry="6" fill="#1e3a2f" stroke="#059669" stroke-width="1" />
+    <text class="badge-font" x="108" y="16" fill="#6ee7b7">📏 LINEAR</text>
 
     <!-- Feature 1 -->
-    <g transform="translate(0, 50)" class="feature-pulse">
-      <circle cx="12" cy="10" r="12" fill="#1e1b4b" />
-      <text x="6" y="15" font-family="Inter, sans-serif" font-size="14px">⚡</text>
-      <text class="feature-title" x="32" y="8">GPU-Accelerated</text>
-      <text class="feature-desc" x="32" y="22">Native driver spring physics, 60 FPS</text>
+    <g transform="translate(0, 50)" class="fp">
+      <circle cx="14" cy="10" r="14" fill="#1e1b4b" />
+      <text x="7" y="15" font-family="Inter, sans-serif" font-size="14px">⚡</text>
+      <text class="feature-head" x="36" y="8">GPU-Accelerated</text>
+      <text class="feature-body" x="36" y="24">Native driver spring physics, 60 FPS</text>
     </g>
 
     <!-- Feature 2 -->
-    <g transform="translate(0, 100)" class="feature-pulse" style="animation-delay: 0.5s;">
-      <circle cx="12" cy="10" r="12" fill="#1c1917" />
-      <text x="6" y="15" font-family="Inter, sans-serif" font-size="14px">🎨</text>
-      <text class="feature-title" x="32" y="8">Fully Customizable</text>
-      <text class="feature-desc" x="32" y="22">Colors, icons, labels, sizes, angles</text>
+    <g transform="translate(0, 105)" class="fp" style="animation-delay: 0.5s;">
+      <circle cx="14" cy="10" r="14" fill="#1c1917" />
+      <text x="7" y="15" font-family="Inter, sans-serif" font-size="14px">🎨</text>
+      <text class="feature-head" x="36" y="8">Fully Customizable</text>
+      <text class="feature-body" x="36" y="24">Colors, icons, labels, sizes, angles</text>
     </g>
 
     <!-- Feature 3 -->
-    <g transform="translate(0, 150)" class="feature-pulse" style="animation-delay: 1s;">
-      <circle cx="12" cy="10" r="12" fill="#0c1a25" />
-      <text x="6" y="15" font-family="Inter, sans-serif" font-size="14px">📦</text>
-      <text class="feature-title" x="32" y="8">Zero Native Code</text>
-      <text class="feature-desc" x="32" y="22">Works in Expo Go, no native linking</text>
+    <g transform="translate(0, 160)" class="fp" style="animation-delay: 1s;">
+      <circle cx="14" cy="10" r="14" fill="#0c1a25" />
+      <text x="7" y="15" font-family="Inter, sans-serif" font-size="14px">📦</text>
+      <text class="feature-head" x="36" y="8">Zero Native Code</text>
+      <text class="feature-body" x="36" y="24">Works in Expo Go, no native linking</text>
     </g>
 
     <!-- Feature 4 -->
-    <g transform="translate(0, 200)" class="feature-pulse" style="animation-delay: 1.5s;">
-      <circle cx="12" cy="10" r="12" fill="#1a0f0f" />
-      <text x="6" y="15" font-family="Inter, sans-serif" font-size="14px">👆</text>
-      <text class="feature-title" x="32" y="8">Backdrop Dismiss</text>
-      <text class="feature-desc" x="32" y="22">Tap outside to close, auto-dimming</text>
+    <g transform="translate(0, 215)" class="fp" style="animation-delay: 1.5s;">
+      <circle cx="14" cy="10" r="14" fill="#1a0f0f" />
+      <text x="7" y="15" font-family="Inter, sans-serif" font-size="14px">👆</text>
+      <text class="feature-head" x="36" y="8">Backdrop Dismiss</text>
+      <text class="feature-body" x="36" y="24">Tap outside to close, auto-dimming</text>
     </g>
 
-    <!-- Code snippet preview -->
-    <g transform="translate(0, 268)">
-      <rect fill="#0f172a" width="420" height="100" rx="10" ry="10" stroke="#1e293b" stroke-width="1" />
+    <!-- Code snippet -->
+    <g transform="translate(0, 280)">
+      <rect fill="#0f172a" width="410" height="100" rx="10" ry="10" stroke="#1e293b" stroke-width="1" />
       <text class="code-font" x="14" y="22" fill="#64748b">// Quick start</text>
       <text class="code-font" x="14" y="40" fill="#c084fc">import</text>
-      <text class="code-font" x="62" y="40" fill="#e2e8f0"> { SpeedDial } </text>
-      <text class="code-font" x="176" y="40" fill="#c084fc">from</text>
-      <text class="code-font" x="210" y="40" fill="#fbbf24">'react-native-speed-dial'</text>
+      <text class="code-font" x="58" y="40" fill="#e2e8f0"> { SpeedDial } </text>
+      <text class="code-font" x="168" y="40" fill="#c084fc">from</text>
+      <text class="code-font" x="200" y="40" fill="#fbbf24">'react-native-speed-dial'</text>
       <text class="code-font" x="14" y="62" fill="#e2e8f0">&lt;</text>
       <text class="code-font" x="22" y="62" fill="#22d3ee">SpeedDial</text>
-      <text class="code-font" x="100" y="62" fill="#fbbf24"> layout</text>
-      <text class="code-font" x="148" y="62" fill="#e2e8f0">=</text>
-      <text class="code-font" x="156" y="62" fill="#4ade80">"radial"</text>
-      <text class="code-font" x="14" y="80" fill="#e2e8f0">  </text>
-      <text class="code-font" x="26" y="80" fill="#fbbf24">actions</text>
-      <text class="code-font" x="80" y="80" fill="#e2e8f0">={actions}</text>
-      <text class="code-font" x="160" y="80" fill="#e2e8f0"> /&gt;</text>
+      <text class="code-font" x="14" y="80" fill="#fbbf24">  layout</text>
+      <text class="code-font" x="76" y="80" fill="#e2e8f0">=</text>
+      <text class="code-font" x="84" y="80" fill="#4ade80">"radial"</text>
+      <text class="code-font" x="140" y="80" fill="#fbbf24"> actions</text>
+      <text class="code-font" x="202" y="80" fill="#e2e8f0">={actions} /&gt;</text>
     </g>
   </g>
 </svg>
