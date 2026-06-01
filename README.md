@@ -2,6 +2,12 @@
 
 A high-performance, zero-dependency, fully customizable floating action button (FAB) speed-dial component for **React Native** and **Expo**. Supports both fanning **radial** (arc-based) and **linear** (list-based) spring-animated layouts.
 
+## 🎬 Demo
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Coderkube-App/react-native-speed-dial/main/assets/speed_dial_demo.svg" alt="Speed Dial Demo" width="800" />
+</p>
+
 ---
 
 ## Features
